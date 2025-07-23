@@ -1,0 +1,51 @@
+[package]
+name = "onnx-reproduce"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+static = []
+
+[dependencies]
+fastembed = { git = "https://github.com/gety-ai/fastembed-rs.git", rev = "8058121", default-features = false, features = [
+    "ort-download-binaries", # "ort-load-dynamic",
+] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+camino = { version = "1.1.9", features = ["serde1"] }
+tokio = { version = "1", features = ["full"] }
+clap = { version = "4.5.37", features = ["derive"] }
+strum = { version = "0.27", features = ["derive"] }
+hf-hub = { version = "0.4.2", features = ["tokio"] }
+unicode-segmentation = "1.10.1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+dunce = "1"
+
+[build-dependencies]
+unicode-segmentation = "1.10.1"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+ort = { git = "https://github.com/pykeio/ort", rev = "d28c835", features = [
+    "load-dynamic",
+    "cuda",
+    "openvino",
+    "xnnpack",
+] }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+ort = { git = "https://github.com/pykeio/ort", rev = "d28c835", features = [
+    "load-dynamic",
+    "cuda",
+    "openvino",
+    "xnnpack",
+    "directml",
+] }
+windows = { version = "0.61.1", features = ["Win32_System_LibraryLoader"] }
+
+[target.aarch64-apple-darwin.dependencies]
+ort = { git = "https://github.com/pykeio/ort", rev = "d28c835", features = [
+    "coreml",
+    "xnnpack",
+] }
